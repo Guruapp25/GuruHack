@@ -4,7 +4,7 @@ const printSignal = document.getElementById("print-signal");
 const stopProgress = document.getElementById("stop-progress");
 
 // Статические значения для минимального и максимального коэффициентов
-const MIN_COEFFICIENT = 3.89; 
+const MIN_COEFFICIENT = 1.89; 
 const MAX_COEFFICIENT = 3.89;
 
 // Функция для генерации случайного числа
@@ -52,6 +52,7 @@ function goTimer(time) {
     }
   }, 1000);
 }
+
 
 
 
