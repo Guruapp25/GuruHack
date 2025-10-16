@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BG SOFT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      background: black;
+      color: white;
+      font-family: 'Orbitron', monospace;
+    }
+    #bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .top-banner {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Orbitron', monospace;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 2px;
+      color: #00f0ff;
+      background: rgba(0,0,0,0.6);
+      padding: 10px 15px;
+      border-radius: 12px;
+      box-shadow: 0 0 5px #00f0ff, 0 0 5px #00f0ff, 0 0 5px #00f0ff;
+      text-shadow: 0 0 5px #00f0ff, 0 0 15px #00aaff;
+      user-select: none;
+      z-index: 1000;
+      white-space: nowrap;
+    }
+
+    .logo {
+      display: block;
+      margin: 80px auto 12px; 
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      filter: drop-shadow(0 0 5px #00f0ff);
+      transition: transform 0.3s;
+    }
+    .logo:hover {
+      transform: scale(1.1);
+    }
+
+    .hack-text {
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: 4px;
+      background: linear-gradient(90deg, #00f0ff, #0088ff, #00f0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px #00f0ff, 0 0 40px #0088ff;
+      margin-bottom: 20px;
+      text-align: center;
+      user-select: none;
+    }
+
+    .signal-circle-container {
+      display: flex;
+      justify-content: center;
+      margin: 32px 0;
+    }
+    .signal-circle {
+      width: 200px;
+      height: 200px;
+      border: 4px solid #ff0000;
+      border-radius: 50%;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .signal-circle:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    }
+
+    .btn {
+      display: block;
+      width: 350px;
+      max-width: 90%;
+      margin: 20px auto;
+      padding: 12px;
+      background: linear-gradient(93.73deg, #108de7, #0855c4);
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      font-family: 'Orbitron', monospace;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+    .btn:hover:not(:disabled) {
+      filter: saturate(1.5);
+    }
+    .btn:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .progress-container {
+      width: 350px;
+      max-width: calc(100% - 30px);
+      height: 20px;
+      margin: 10px auto;
+      background: #0c4f5d;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-bar {
+      height: 100%;
+      background: #00f0ff;
+      width: 0%;
+      transition: width 1s linear;
+    }
+    .progress-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: white;
+    }
+
+    .waiting {
+      text-align: center;
+      margin-top: 10px;
+      color: #00f0ff;
+      min-height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- Fixed, non-editable title above logo -->
+  <div class="top-banner">BG SOFT</div>
+
+  <img class="logo" src="https://iili.io/FKNWLwQ.png" alt="Logo" />
+
+  <div class="hack-text">HACK</div>
+
+  <div class="signal-circle-container">
+    <div class="signal-circle" id="signalDisplay">SIGNAL</div>
+  </div>
+
+  <div class="waiting" id="waitingText"></div>
+
+  <button class="btn" id="signalBtn">Start Signal</button>
+
+  <div class="progress-container" id="progressContainer" style="display:none;">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="progress-text" id="progressText">Auto Updating in 60s</div>
+  </div>
+
+  <script>
+    // ====== CANVAS BACKGROUND ======
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const particleCount = 80;
+    const maxDistance = 150;
+    const particles = [];
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.speedX = (Math.random() - 0.5) * 0.7;
+        this.speedY = (Math.random() - 0.5) * 0.7;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+        if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+      }
+      draw() {
+        ctx.fillStyle = '#ff0000';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+
+    function drawAirplane(x, y, size) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(size, size);
+      ctx.strokeStyle = '#ff0000';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -10);
+      ctx.lineTo(-6, 4);
+      ctx.lineTo(0, 0);
+      ctx.lineTo(6, 4);
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.moveTo(0, 0);
+      ctx.lineTo(-2, -4);
+      ctx.lineTo(2, -4);
+      ctx.lineTo(0, 0);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function animate() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < maxDistance) {
+            const alpha = (maxDistance - dist) / maxDistance * 0.4;
+            ctx.strokeStyle = `rgba(255, 0, 0, ${alpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      for (const p of particles) {
+        p.update();
+        p.draw();
+      }
+
+      drawAirplane(canvas.width / 2, canvas.height / 2, 1.2);
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // ====== SIGNAL LOGIC ======
+    const signalDisplay = document.getElementById('signalDisplay');
+    const signalBtn = document.getElementById('signalBtn');
+    const waitingText = document.getElementById('waitingText');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+    let loopStarted = false;
+    let timeRemains = 60;
+    let timer = null;
+
+    const waitingMessages = [
+      "Checking connection...",
+      "Fetching data...",
+      "Processing request...",
+      "Optimizing response...",
+      "Finalizing...",
+      "Establishing secure session...",
+      "Compiling resources...",
+      "Verifying user permissions...",
+      "Assembling results...",
+      "Crunching numbers...",
+      "Calibrating modules...",
+      "Synchronizing data...",
+      "Decrypting response...",
+      "Reticulating splines...",
+      "Preheating servers... 🔥",
+      "Summoning data gnomes... 🧙‍♂️"
+    ];
+
+    function getRandomSignal() {
+      const rand = Math.random();
+      if (rand < 0.8) {
+        return parseFloat((Math.random() * (3.70 - 2.10) + 2.10).toFixed(2));
+      } else {
+        return parseFloat((Math.random() * (7.00 - 1.10) + 1.10).toFixed(2));
+      }
+    }
+
+    async function generateSignal() {
+      signalBtn.disabled = true;
+      signalDisplay.textContent = "GET SIGNAL";
+      waitingText.textContent = "";
+
+      await new Promise(r => setTimeout(r, 300 + Math.random() * 300));
+      await new Promise(r => setTimeout(r, 300 + Math.random() * 300));
+
+      const signal = getRandomSignal();
+      signalDisplay.textContent = `${signal.toFixed(2)}x`;
+      waitingText.textContent = "";
+      signalBtn.disabled = false;
+
+      if (!loopStarted) {
+        loopStarted = true;
+        signalBtn.textContent = "Refresh Signal";
+        progressContainer.style.display = "block";
+        startCountdown();
+      }
+    }
+
+    function startCountdown() {
+      timeRemains = 60;
+      updateProgress();
+
+      clearInterval(timer);
+      timer = setInterval(() => {
+        timeRemains--;
+        updateProgress();
+        if (timeRemains <= 0) {
+          clearInterval(timer);
+          generateSignal();
+        }
+      }, 1000);
+    }
+
+    function updateProgress() {
+      const percent = 100 - (timeRemains / 60 * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `Auto Updating in ${timeRemains}s`;
+    }
+
+    signalBtn.addEventListener('click', () => {
+      if (loopStarted) {
+        clearInterval(timer);
+        generateSignal();
+      } else {
+        generateSignal();
+      }
+    });
+  </script>
+</body>
+</html>
