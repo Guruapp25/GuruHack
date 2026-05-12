@@ -321,8 +321,8 @@
         .progress span { display: block; width: 0%; height: 100%; background: linear-gradient(90deg, var(--gold-deep), var(--gold), #fff2b8); border-radius: inherit; transition: width .45s ease; }
 
         .signal-word { font-size: clamp(58px, 18vw, 86px); font-weight: 950; line-height: .95; letter-spacing: 0.06em; text-shadow: 0 0 28px currentColor; }
-        .signal-word.buy { color: var(--green); }
-        .signal-word.sell { color: var(--red); }
+        .signal-word.up { color: var(--green); }
+        .signal-word.down { color: var(--red); }
         .result-meta { margin-top: 18px; display: grid; gap: 10px; }
         .meta-row { padding: 13px 14px; border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; background: rgba(255,255,255,0.055); display: flex; justify-content: space-between; gap: 14px; }
         .meta-row span:first-child { color: var(--muted); }
@@ -634,14 +634,27 @@
 
             setTimeout(() => {
                 clearInterval(stepTimer);
-                const action = Math.random() > 0.5 ? "BUY" : "SELL";
+                const isUp = Math.random() > 0.5;
 
-                signalWord.textContent = action;
+                const action = isUp ? "UP" : "DOWN";
+                const arrow = isUp ? "↑" : "↓";
+
+                signalWord.innerHTML = `
+                ${action}
+                <span style="
+                color:${isUp ? 'var(--green)' : 'var(--red)'};
+                margin-left:12px;
+                filter:drop-shadow(0 0 12px currentColor);
+                ">
+                ${arrow}
+                </span>
+                `;
+
                 signalWord.className = `signal-word ${action.toLowerCase()}`;
                 resultPair.textContent = pair;
                 resultTimeframe.textContent = timeframe;
                 resultAction.textContent = action;
-                resultAction.style.color = action === "BUY" ? "var(--green)" : "var(--red)";
+                resultAction.style.color = isUp ? "var(--green)" : "var(--red)";
 
                 tg?.HapticFeedback?.notificationOccurred?.("success");
                 setView("result");
