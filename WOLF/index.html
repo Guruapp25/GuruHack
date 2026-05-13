@@ -513,13 +513,44 @@
         }
 
         const pairs = [
-            "EUR/USD", "GBP/USD", "USD/JPY", "USD/CHF", "USD/CAD",
-            "AUD/USD", "NZD/USD", "EUR/JPY", "GBP/JPY", "EUR/GBP",
-            "XAU/USD", "XAG/USD", "BTC/USD", "ETH/USD", "SOL/USD",
-            "BNB/USD", "US100", "SPX500", "US30", "DAX40"
+            "EUR/USD OTC",
+
+            "Bitcoin OTC",
+            "Ethereum OTC",
+            "Solana OTC",
+            "Toncoin OTC",
+            "BNB OTC",
+            "Tron OTC",
+            "Dogecoin OTC",
+            "XRP OTC",
+            "Cardano OTC",
+            "Litecoin OTC",
+            "Avalanche OTC",
+            "Polkadot OTC",
+            "Chainlink OTC",
+            "Polygon OTC",
+
+            "Gold OTC",
+            "Silver OTC",
+            "Brent Oil OTC",
+
+            "GBP/USD OTC",
+            "USD/JPY OTC",
+            "AUD/USD OTC",
+            "NZD/USD OTC",
+            "USD/INR OTC",
+            "USD/PKR OTC",
+
+            "Apple OTC",
+            "Microsoft OTC",
+            "Tesla OTC",
+            "Meta OTC",
+            "Amazon OTC",
+            "NVIDIA OTC",
+            "Google OTC"
         ];
 
-        const timeframes = ["S5", "S15", "S30", "M1", "M5"];
+        const timeframes = ["S3", "S5", "S15", "S30", "M1", "M5"];
         const loadingSteps = [
             "Connecting to signal server...",
             "Loading live market stream...",
@@ -603,7 +634,7 @@
 
         fillSelect(pairSelect, pairs);
         fillSelect(timeframeSelect, timeframes);
-        pairSelect.value = "EUR/USD";
+        pairSelect.value = "EUR/USD OTC";
         timeframeSelect.value = "S15";
 
         function setView(view) {
