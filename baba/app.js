@@ -1,3 +1,14 @@
+// MOBILE_SAFE_VIEWPORT_FIX
+function setVH(){
+  document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+}
+setVH();
+window.addEventListener('resize', setVH);
+try {
+  window.Telegram?.WebApp?.ready?.();
+  window.Telegram?.WebApp?.expand?.();
+} catch(e) {}
+
 const targets = [
   {el: document.querySelector('.t12'), name: 'x12'},
   {el: document.querySelector('.t6'), name: 'x6'},
