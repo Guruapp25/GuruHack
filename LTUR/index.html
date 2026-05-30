@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#14151f" />
+  <title>GURUHACK Signal</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">GURUHACK</div>
+      <div class="status-pill" id="statusPill">SIGNAL READY</div>
+    </header>
+
+    <section class="game-card">
+      <div class="signal-strip" id="signalStrip">
+        <span>SELECT MINES</span>
+        <b id="mineLabel">2 MINES</b>
+        <span>GET SAFE MAP</span>
+      </div>
+
+      <div class="grid-wrap">
+        <div class="grid" id="grid"></div>
+      </div>
+
+      <button class="get-btn" id="getSignalBtn">
+        <span class="pulse-dot"></span>
+        GET SIGNAL
+      </button>
+
+      <div class="controls">
+        <label class="control-label">Mines</label>
+        <div class="mine-stepper">
+          <button id="minusBtn">−</button>
+          <input id="minesInput" type="number" value="2" min="2" max="24" />
+          <button id="plusBtn">+</button>
+        </div>
+      </div>
+
+      <a class="tg-box" href="https://t.me/LUCKYGURUHACK" target="_blank" rel="noopener">
+        <span class="tg-icon">
+          <svg viewBox="0 0 240 240" aria-hidden="true"><circle cx="120" cy="120" r="120" fill="#29a9eb"/><path d="M51 116 166 72c12-5 22 3 18 20l-20 94c-2 11-9 14-18 9l-31-23-15 15c-2 2-4 4-9 4l3-32 59-54c5-5-1-7-8-3l-73 46-31-10c-11-4-11-14 10-22z" fill="#fff"/></svg>
+        </span>
+        <span>@LUCKYGURUHACK</span>
+      </a>
+    </section>
+
+    <section class="info-card">
+      <div class="info-title">SIGNAL DETAILS</div>
+      <div class="info-row"><span>Mines</span><b id="detailMines">2</b></div>
+      <div class="info-row"><span>Diamonds shown</span><b id="detailDiamonds">23</b></div>
+      <div class="info-row"><span>Bombs shown</span><b id="detailBombs">2</b></div>
+    </section>
+  </main>
+
+  <script>
+    window.GURU_ASSETS = {
+      diamond: "./assets/diamond.svg",
+      bomb: "./assets/bomb.svg"
+    };
+  </script>
+  <script src="./app.js"></script>
+</body>
+</html>
