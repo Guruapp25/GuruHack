@@ -4,7 +4,6 @@ const signal=document.getElementById('signal');
 const minus=document.getElementById('minus');
 const plus=document.getElementById('plus');
 const count=document.getElementById('count');
-const loader=document.getElementById('loader');
 let loading=false;
 count.textContent='1';
 let mines=1;
@@ -61,19 +60,36 @@ function generate(){
   mineIds.forEach(i=>bomb(cells[i]));
   safe.slice(0,Math.min(safeShown(mines),safe.length)).forEach(i=>gem(cells[i]));
 }
+function showLoader(){
+  const board=document.querySelector('.board');
+  const el=document.createElement('div');
+  el.className='temp-loader';
+  el.innerHTML='<div class="scan"></div><div class="ring"></div><div class="txt">ANALYZING</div>';
+  board.appendChild(el);
+  // Force a layout pass so iOS WebView starts CSS animations immediately.
+  void el.offsetWidth;
+  return el;
+}
+
 signal.onclick=()=>{
   if(loading) return;
   loading=true;
   clear();
-  loader.classList.add('show');
   signal.classList.add('loading');
 
-  setTimeout(()=>{
-    loader.classList.remove('show');
+  const loaderEl=showLoader();
+
+  window.setTimeout(()=>{
+    loaderEl.remove();
     signal.classList.remove('loading');
     generate();
     loading=false;
-    navigator.vibrate?.(45);
+    try{navigator.vibrate && navigator.vibrate(45);}catch(e){}
   },1000);
 };
-try{Telegram.WebApp.ready();Telegram.WebApp.expand();}catch(e){}
+try{
+  if(window.Telegram && Telegram.WebApp){
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+  }
+}catch(e){}
