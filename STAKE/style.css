@@ -133,3 +133,16 @@ body{
     margin-top:0 !important;
   }
 }
+
+
+/* Balanced outer spacing for v6 */
+.app{
+  --outer-gap:12px;
+  padding-top:max(var(--outer-gap), env(safe-area-inset-top)) !important;
+  padding-bottom:max(var(--outer-gap), env(safe-area-inset-bottom)) !important;
+}
+@media(max-width:480px){
+  .app{
+    --outer-gap:10px;
+  }
+}
