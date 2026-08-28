@@ -146,3 +146,58 @@ body{
     --outer-gap:10px;
   }
 }
+
+
+/* v6.2 — vertically center the whole game block in Telegram/iPhone */
+html, body{
+  width:100% !important;
+  height:100% !important;
+  min-height:100% !important;
+}
+
+body{
+  display:flex !important;
+  justify-content:center !important;
+  align-items:stretch !important;
+}
+
+.app{
+  width:min(100vw,620px) !important;
+  height:100dvh !important;
+  min-height:100dvh !important;
+  max-height:100dvh !important;
+
+  /* Telegram exposes this variable in its WebView; use it when available */
+  height:var(--tg-viewport-stable-height, 100dvh) !important;
+  min-height:var(--tg-viewport-stable-height, 100dvh) !important;
+  max-height:var(--tg-viewport-stable-height, 100dvh) !important;
+
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+
+  padding-top:max(10px, env(safe-area-inset-top)) !important;
+  padding-bottom:max(10px, env(safe-area-inset-bottom)) !important;
+}
+
+.board,
+.controls{
+  flex:none !important;
+}
+
+.board{
+  margin:0 !important;
+}
+
+.controls{
+  margin:8px 0 0 0 !important;
+  padding:0 !important;
+}
+
+@supports not (height:100dvh){
+  .app{
+    height:100vh !important;
+    min-height:100vh !important;
+    max-height:100vh !important;
+  }
+}
