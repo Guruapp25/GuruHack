@@ -4,6 +4,8 @@ const signal=document.getElementById('signal');
 const minus=document.getElementById('minus');
 const plus=document.getElementById('plus');
 const count=document.getElementById('count');
+const loader=document.getElementById('loader');
+let loading=false;
 count.textContent='1';
 let mines=1;
 const cells=[];
@@ -59,5 +61,19 @@ function generate(){
   mineIds.forEach(i=>bomb(cells[i]));
   safe.slice(0,Math.min(safeShown(mines),safe.length)).forEach(i=>gem(cells[i]));
 }
-signal.onclick=generate;
+signal.onclick=()=>{
+  if(loading) return;
+  loading=true;
+  clear();
+  loader.classList.add('show');
+  signal.classList.add('loading');
+
+  setTimeout(()=>{
+    loader.classList.remove('show');
+    signal.classList.remove('loading');
+    generate();
+    loading=false;
+    navigator.vibrate?.(45);
+  },1000);
+};
 try{Telegram.WebApp.ready();Telegram.WebApp.expand();}catch(e){}

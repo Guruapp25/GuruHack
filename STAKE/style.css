@@ -10,14 +10,14 @@ body{display:flex;justify-content:center;overflow-x:hidden}
 .cell{position:relative;border:0;border-radius:13px;background:linear-gradient(#3a4f5c,#334955);box-shadow:0 7px 0 var(--shadow);overflow:hidden}
 .cell.open{background:var(--open);box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);animation:pop .2s ease}
 @keyframes pop{from{transform:scale(.92)}to{transform:scale(1)}}
-.diamond{position:absolute;left:18%;top:18%;width:64%;height:64%;filter:drop-shadow(0 6px 3px rgba(0,0,0,.3));animation:in .25s cubic-bezier(.2,.8,.2,1.2)}
-.diamond:before{content:"";position:absolute;left:10%;right:10%;top:8%;bottom:8%;background:linear-gradient(135deg,#18c13a 0 25%,#00a51c 25% 58%,#008f12 58%);clip-path:polygon(28% 0,72% 0,100% 30%,50% 100%,0 30%);box-shadow:inset 0 0 0 2px rgba(35,255,74,.2)}
+.diamond{position:absolute;left:18%;top:18%;width:64%;height:64%;filter:brightness(1.18) saturate(1.18) drop-shadow(0 0 5px rgba(22,255,70,.22)) drop-shadow(0 6px 3px rgba(0,0,0,.3));animation:in .25s cubic-bezier(.2,.8,.2,1.2)}
+.diamond:before{content:"";position:absolute;left:10%;right:10%;top:8%;bottom:8%;background:linear-gradient(135deg,#32e85b 0 25%,#08c92d 25% 58%,#00a91c 58%);clip-path:polygon(28% 0,72% 0,100% 30%,50% 100%,0 30%);box-shadow:inset 0 0 0 2px rgba(35,255,74,.2)}
 .diamond:after{content:"";position:absolute;left:30%;top:18%;width:38%;height:24%;background:rgba(58,255,103,.18);clip-path:polygon(0 0,100% 15%,60% 100%,15% 70%)}
 .mine{position:absolute;left:24%;top:24%;width:52%;height:52%;border-radius:50%;background:radial-gradient(circle at 32% 28%,#ff8e84 0 9%,#e83d35 10% 44%,#9b1b18 70%);box-shadow:0 6px 8px rgba(0,0,0,.35)}
 .mine:before,.mine:after{content:"";position:absolute;left:46%;top:-23%;width:8%;height:146%;background:#c62f2a;border-radius:9px}
 .mine:after{transform:rotate(90deg)}
 @keyframes in{from{transform:scale(.35);opacity:0}to{transform:scale(1);opacity:1}}
-.controls{margin-top:auto;display:flex;flex-direction:column;gap:11px}
+.controls{margin-top:0;display:flex;flex-direction:column;gap:11px}
 .signal{position:relative;height:61px;border-radius:18px;border:1px solid rgba(63,214,255,.65);background:radial-gradient(circle at 50% 120%,rgba(63,214,255,.3),transparent 58%),linear-gradient(#153645,#102b39);color:#fff;font-size:20px;font-weight:1000;letter-spacing:.5px}
 .signal span{position:absolute;width:48px;height:4px;border-radius:99px;background:#4ddcff;box-shadow:0 0 14px #4ddcff;left:50%;bottom:7px;transform:translateX(-50%)}
 .picker{height:60px;border-radius:18px;overflow:hidden;background:#0b2431;display:grid;grid-template-columns:68px 1fr 68px}
@@ -26,3 +26,90 @@ body{display:flex;justify-content:center;overflow-x:hidden}
 
 @media(max-width:420px){.app{padding-left:10px;padding-right:10px}.board{padding:8px}.grid{gap:6px}.cell{border-radius:10px;box-shadow:0 5px 0 var(--shadow)}}
 @media(max-height:700px){.app{gap:9px}.controls{gap:8px}.signal,.picker,}
+
+
+/* 1 SECOND SIGNAL LOADING */
+.board{position:relative;overflow:hidden}
+.loader{
+  position:absolute;
+  inset:10px;
+  z-index:100;
+  border-radius:15px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:rgba(5,22,31,.88);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .12s ease;
+}
+.loader.show{opacity:1;visibility:visible}
+.loader-ring{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  border:4px solid rgba(65,217,255,.15);
+  border-top-color:#43d9ff;
+  border-right-color:#43d9ff;
+  box-shadow:0 0 22px rgba(67,217,255,.25),inset 0 0 18px rgba(67,217,255,.08);
+  animation:loaderSpin .65s linear infinite;
+}
+.loader-text{
+  margin-top:18px;
+  color:#fff;
+  font-size:14px;
+  font-weight:1000;
+  letter-spacing:3px;
+  text-shadow:0 0 12px rgba(67,217,255,.55);
+}
+.loader-dots{display:flex;gap:6px;margin-top:10px}
+.loader-dots i{
+  width:6px;height:6px;border-radius:50%;
+  background:#43d9ff;
+  box-shadow:0 0 9px #43d9ff;
+  animation:dotPulse .7s ease-in-out infinite;
+}
+.loader-dots i:nth-child(2){animation-delay:.12s}
+.loader-dots i:nth-child(3){animation-delay:.24s}
+.scanner{
+  position:absolute;
+  left:5%;
+  right:5%;
+  height:2px;
+  top:8%;
+  background:linear-gradient(90deg,transparent,#43d9ff,transparent);
+  box-shadow:0 0 15px #43d9ff;
+  opacity:.85;
+  animation:scanBoard .85s ease-in-out infinite alternate;
+}
+.signal.loading{pointer-events:none;opacity:.72}
+@keyframes loaderSpin{to{transform:rotate(360deg)}}
+@keyframes dotPulse{0%,100%{opacity:.25;transform:scale(.75)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes scanBoard{from{top:8%}to{top:92%}}
+@media(max-width:420px){
+  .loader{inset:8px}
+  .loader-ring{width:56px;height:56px}
+}
+
+/* Telegram / iPhone viewport spacing fix */
+.board + .controls{
+  margin-top:0 !important;
+}
+@supports (height: 100dvh){
+  .app{
+    min-height:100dvh;
+    justify-content:flex-start;
+  }
+}
+@media (max-width: 480px){
+  .app{
+    gap:10px !important;
+  }
+  .controls{
+    margin-top:0 !important;
+  }
+}
